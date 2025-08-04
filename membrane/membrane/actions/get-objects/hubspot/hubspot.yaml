@@ -1,0 +1,23 @@
+isCustomized: false
+parentId: 682a0858ce0e5ddeb3a3815e
+integrationId: 682a02dece0e5ddeb3a296e4
+key: get-objects
+state: READY
+errors: []
+isDeactivated: false
+id: 682a0c319a9dfd1edeef6e38
+name: Get Objects
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: objects
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: objects
+integrationKey: hubspot

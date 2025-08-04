@@ -1,0 +1,19 @@
+key: companies
+isDeactivated: false
+id: 682a02f732932705009bea24
+name: Companies
+schema:
+  type: object
+  properties:
+    id:
+      type: string
+    name:
+      type: string
+code: |-
+  module.exports = async ({apiClient, user, instanceKey}) => {
+
+    const userId = user.internalId;
+
+    const { data } = await apiClient.get(`/schema/companies/${userId}`)
+    return data.schema
+  }

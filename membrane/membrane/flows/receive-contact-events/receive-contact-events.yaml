@@ -1,0 +1,92 @@
+key: receive-contact-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a031038cbde432cc80469
+name: Receive Contact Events
+nodes:
+  contact-created-trigger:
+    type: data-record-created-trigger
+    name: Contact Created Trigger
+    config:
+      dataSource:
+        key: contacts
+    links:
+      - key: get-all-contact-fields-by-id
+  contact-updated-trigger:
+    type: data-record-updated-trigger
+    name: Contact Updated Trigger
+    config:
+      dataSource:
+        key: contacts
+    links:
+      - key: get-all-contact-fields-by-id2
+  get-all-contact-fields-by-id:
+    type: find-data-record-by-id
+    name: Get all Contact fields by Id
+    config:
+      dataSource:
+        key: contacts
+      fieldMapping:
+        key: contacts
+        includeRawFields: true
+      id:
+        $var: $.input.contact-created-trigger.record.id
+    links:
+      - key: create-contact-in-my-app
+  get-all-contact-fields-by-id2:
+    type: find-data-record-by-id
+    name: Get all Contact fields by Id
+    config:
+      dataSource:
+        key: contacts
+      id:
+        $var: $.input.contact-updated-trigger.record.id
+      fieldMapping:
+        key: contacts
+        includeRawFields: true
+    links:
+      - key: update-contact-in-my-app
+  create-contact-in-my-app:
+    type: api-request-to-your-app
+    name: Create Contact in my App
+    config:
+      request:
+        body:
+          externalContactId:
+            $var: $.input.get-all-contact-fields-by-id.id
+          data:
+            $var: $.input.get-all-contact-fields-by-id
+        method: POST
+    links: []
+  update-contact-in-my-app:
+    type: api-request-to-your-app
+    name: Update Contact in my App
+    config:
+      request:
+        body:
+          externalContactId:
+            $var: $.input.get-all-contact-fields-by-id2.id
+          data:
+            $var: $.input.get-all-contact-fields-by-id2
+    links: []
+  delete-contact-in-my-app:
+    type: api-request-to-your-app
+    name: Delete Contact from My App
+    config:
+      request:
+        body:
+          externalContactId:
+            $var: $.input.contact-deleted-trigger.record.id
+        method: POST
+    links: []
+  contact-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Contact Deleted Trigger
+    config:
+      dataSource:
+        key: contacts
+    links:
+      - key: delete-contact-in-my-app
+autoCreateInstances: false
+customized: true

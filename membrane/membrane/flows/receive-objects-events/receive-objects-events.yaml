@@ -1,0 +1,58 @@
+key: receive-objects-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a3eab38cbde432cd28020
+name: Receive Objects Events
+nodes:
+  data-record-created-trigger:
+    type: data-record-created-trigger
+    name: Data Record Created Trigger
+    config:
+      dataSource:
+        key: objects
+      fieldMapping:
+        key: objects
+    links:
+      - key: get-all-object-fields
+  data-record-updated-trigger:
+    type: data-record-updated-trigger
+    name: Data Record Updated Trigger
+    config:
+      dataSource:
+        key: objects
+      fieldMapping:
+        key: objects
+    links: []
+  data-record-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Data Record Deleted Trigger
+    config:
+      dataSource:
+        key: objects
+    links: []
+  get-all-object-fields:
+    type: find-data-record-by-id
+    name: Get all Object Fields
+    config:
+      dataSource:
+        key: objects
+      id:
+        $var: $.input.data-record-created-trigger.record.id
+      fieldMapping:
+        key: null
+    links:
+      - key: create-a-object-in-my-app
+  create-a-object-in-my-app:
+    type: api-request-to-your-app
+    name: Create a Object in my app
+    config:
+      request:
+        method: POST
+        body:
+          externalObjectId: ''
+          data:
+            $var: $.input.data-record-created-trigger
+    links: []
+autoCreateInstances: false
+customized: true

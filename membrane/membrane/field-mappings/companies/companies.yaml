@@ -1,0 +1,15 @@
+key: companies
+state: READY
+errors: []
+isDeactivated: false
+id: 682a030d219c74312f27bd01
+name: Companies
+customized: true
+dataSourceKey: companies
+appSchema:
+  $ref: companies
+direction: both
+defaultImportValue:
+  $var: $
+defaultExportValue:
+  $var: $

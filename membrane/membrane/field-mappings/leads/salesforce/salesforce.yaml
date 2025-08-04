@@ -1,0 +1,167 @@
+key: leads
+state: SETUP_FAILED
+errors:
+  - message: Cannot read properties of null (reading 'id')
+    type: internal
+isDeactivated: false
+id: 682a03273f96f5825e43fdbc
+name: Leads
+customized: false
+universalFieldMappingId: 682a030e9a9dfd1edeee1d9d
+integrationId: 682a02e2e178a786a39aeaf8
+appSchema:
+  $ref: leads
+direction: both
+defaultImportValue:
+  $var: $
+defaultExportValue:
+  $var: $
+exportValue:
+  LastName:
+    $var: $.lastName
+  FirstName:
+    $var: $.firstName
+  Title:
+    $var: $.jobTitle
+  Company:
+    $var: $.companyName
+  Street:
+    $var: $.primaryAddress.street
+  City:
+    $var: $.primaryAddress.city
+  State:
+    $var: $.primaryAddress.state
+  PostalCode:
+    $var: $.primaryAddress.zip
+  Country:
+    $var: $.primaryAddress.country
+  Phone:
+    $var: $.primaryPhone
+  MobilePhone:
+    $var: $.phones[1].value
+  Email:
+    $var: $.primaryEmail
+  LeadSource:
+    $var: $.source
+  OwnerId:
+    $var: $.ownerId
+  ConvertedAccountId:
+    $var: $.companyId
+  CreatedDate:
+    $var: $.createdTime
+  CreatedById:
+    $var: $.createdBy
+  LastModifiedDate:
+    $var: $.updatedTime
+  LastModifiedById:
+    $var: $.updatedBy
+  LastActivityDate:
+    $var: $.lastActivityTime
+importValue:
+  id:
+    $var: $.Id
+  fullName:
+    $var: $.Name
+  firstName:
+    $var: $.FirstName
+  lastName:
+    $var: $.LastName
+  companyId:
+    $var: $.ConvertedAccountId
+  companyName:
+    $var: $.Company
+  source:
+    $var: $.LeadSource
+  ownerId:
+    $var: $.OwnerId
+  contactId:
+    $var: $.ConvertedContactId
+  primaryEmail:
+    $var: $.Email
+  primaryPhone:
+    $var: $.Phone
+  phones:
+    - value:
+        $var: $.Phone
+    - value:
+        $var: $.MobilePhone
+  primaryAddress:
+    full:
+      $concat:
+        values:
+          - $var: $.Street
+          - $var: $.City
+          - $var: $.State
+          - $var: $.PostalCode
+          - $var: $.Country
+        delimiter: ' '
+    street:
+      $var: $.Street
+    city:
+      $var: $.City
+    state:
+      $var: $.State
+    country:
+      $var: $.Country
+    zip:
+      $var: $.PostalCode
+  jobTitle:
+    $var: $.Title
+  createdTime:
+    $var: $.CreatedDate
+  createdBy:
+    $var: $.CreatedById
+  updatedTime:
+    $var: $.LastModifiedDate
+  updatedBy:
+    $var: $.LastModifiedById
+  lastActivityTime:
+    $var: $.LastActivityDate
+  emails:
+    - value:
+        $var: $.Email
+  addresses:
+    - value:
+        full:
+          $concat:
+            values:
+              - $var: $.Street
+              - $var: $.City
+              - $var: $.State
+              - $var: $.PostalCode
+              - $var: $.Country
+            delimiter: ' '
+        street:
+          $var: $.Street
+        city:
+          $var: $.City
+        state:
+          $var: $.State
+        country:
+          $var: $.Country
+        zip:
+          $var: $.PostalCode
+integration:
+  key: salesforce
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 682a02e2e178a786a39aeaf8
+  name: Salesforce
+  uuid: 3fae03cc-7c05-4871-9b36-5f4aa31d84c8
+  connectorId: 62471fad996d5c297ae43f5e
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/73d3deac-bf53-49fe-a646-0ad8c0b35824
+  connectorVersion: 1.6.2
+  logoUri: https://static.integration.app/connectors/salesforce-connector/logo.png
+  dataCollectionsCount: 30
+  operationsCount: 303
+  eventsCount: 0
+  authType: oauth2
+integrationKey: salesforce

@@ -1,0 +1,30 @@
+isCustomized: false
+parentId: 682a02f6219c74312f27b968
+integrationId: 682a02e2e178a786a39aeaf8
+key: get-deals
+state: CONFIGURATION_ERROR
+errors:
+  - message: Field Mapping Dependency has error(s)
+    type: dependency_error
+    data:
+      workspaceElementReference:
+        type: field-mapping
+        id: 682a032532932705009bf27d
+isDeactivated: false
+id: 682a032532932705009bf273
+name: Get Deals
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: deals
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: deals
+    includeRawFields: true
+integrationKey: salesforce

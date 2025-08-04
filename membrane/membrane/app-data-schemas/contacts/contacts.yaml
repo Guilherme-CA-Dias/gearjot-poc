@@ -1,0 +1,21 @@
+key: contacts
+isDeactivated: false
+id: 682a02fb274a6daa52cb8642
+name: Contacts
+schema:
+  type: object
+  properties:
+    id:
+      type: string
+    name:
+      type: string
+    email:
+      type: string
+code: |-
+  module.exports = async ({apiClient, user, instanceKey}) => {
+
+    const userId = user.internalId;
+
+    const { data } = await apiClient.get(`/schema/contacts/${userId}`)
+    return data.schema
+  }

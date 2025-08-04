@@ -1,0 +1,104 @@
+key: send-company-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a03599498c459694263d9
+name: Send Company Events
+universalFlowId: 682a0317219c74312f27bd98
+integrationId: 682a02e2e178a786a39aeaf8
+integration:
+  key: salesforce
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 682a02e2e178a786a39aeaf8
+  name: Salesforce
+  uuid: 3fae03cc-7c05-4871-9b36-5f4aa31d84c8
+  connectorId: 62471fad996d5c297ae43f5e
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/73d3deac-bf53-49fe-a646-0ad8c0b35824
+  connectorVersion: 1.6.2
+  logoUri: https://static.integration.app/connectors/salesforce-connector/logo.png
+  dataCollectionsCount: 30
+  operationsCount: 303
+  eventsCount: 0
+  authType: oauth2
+nodes:
+  app-event-trigger:
+    type: app-event-trigger
+    name: Company Event Trigger
+    config:
+      appEvent:
+        key: company-event
+    links:
+      - key: create-data-record
+        name: Company created
+        filter:
+          $eval:
+            $var: $.output.type
+          is: created
+      - key: delete-data-record
+        name: Company deleted
+        filter:
+          $eval:
+            $var: $.output.type
+          is: deleted
+      - key: update-data-record
+        name: Company updated
+        filter:
+          $eval:
+            $var: $.output.type
+          is: updated
+  create-data-record:
+    type: create-data-record
+    name: Create Company
+    config:
+      dataSource:
+        key: companies
+      fieldMapping:
+        key: companies
+        input:
+          $var: $.input.app-event-trigger.data
+    links:
+      - key: save-external-company-id
+  delete-data-record:
+    type: delete-data-record
+    name: Delete Company
+    config:
+      dataSource:
+        key: companies
+      id:
+        $var: $.input.app-event-trigger.externalCompanyId
+      fieldMapping: {}
+    links: []
+  update-data-record:
+    type: update-data-record
+    name: Update Company
+    config:
+      dataSource:
+        key: companies
+      id:
+        $var: $.input.app-event-trigger.externalCompanyId
+      fieldMapping:
+        key: companies
+        input:
+          $var: $.input.app-event-trigger.data
+    links: []
+  save-external-company-id:
+    type: api-request-to-your-app
+    name: Save External Company Id
+    config:
+      request:
+        body:
+          externalCompanyId:
+            $var: $.input.create-data-record.id
+    links: []
+autoCreateInstances: false
+customized: false
+integrationKey: salesforce

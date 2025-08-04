@@ -1,108 +1,124 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getAuthFromRequest } from '@/lib/server-auth';
-import { getIntegrationClient } from '@/lib/integration-app-client';
-import { Record } from '@/models/record';
-import { connectToDatabase } from '@/lib/mongodb';
-import { RecordActionKey } from '@/lib/constants';
+import { NextRequest, NextResponse } from "next/server";
+import { getAuthFromRequest } from "@/lib/server-auth";
+import { getIntegrationClient } from "@/lib/integration-app-client";
+import { Record, IRecord } from "@/models/record";
+import { connectToDatabase } from "@/lib/mongodb";
+import { RecordActionKey } from "@/lib/constants";
 
 export async function GET(request: NextRequest) {
-  try {
-    const auth = getAuthFromRequest(request);
-    if (!auth.customerId) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+	try {
+		const auth = getAuthFromRequest(request);
+		if (!auth.customerId) {
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		}
 
-    const searchParams = request.nextUrl.searchParams;
-    const actionKey = searchParams.get('action') as RecordActionKey;
-    const instanceKey = searchParams.get('instanceKey');
-    const autoCreate = searchParams.get('autoCreate') === 'true';
+		const searchParams = request.nextUrl.searchParams;
+		const actionKey = searchParams.get("action") as RecordActionKey;
+		const instanceKey = searchParams.get("instanceKey");
 
-    if (!actionKey) {
-      return NextResponse.json(
-        { error: 'Action key is required' },
-        { status: 400 }
-      );
-    }
+		if (!actionKey) {
+			return NextResponse.json(
+				{ error: "Action key is required" },
+				{ status: 400 }
+			);
+		}
 
-    // For get-objects action, instanceKey is required
-    if (actionKey === 'get-objects' && !instanceKey) {
-      return NextResponse.json(
-        { error: 'Instance key is required for get-objects action' },
-        { status: 400 }
-      );
-    }
+		// For get-objects action, instanceKey is required
+		if (actionKey === "get-objects" && !instanceKey) {
+			return NextResponse.json(
+				{ error: "Instance key is required for get-objects action" },
+				{ status: 400 }
+			);
+		}
 
-    await connectToDatabase();
-    const client = await getIntegrationClient(auth);
-    const connectionsResponse = await client.connections.find();
-    const firstConnection = connectionsResponse.items?.[0];
+		await connectToDatabase();
+		const client = await getIntegrationClient(auth);
+		const connectionsResponse = await client.connections.find();
+		const firstConnection = connectionsResponse.items?.[0];
 
-    if (!firstConnection) {
-      return NextResponse.json({ success: false, error: 'No connection found' });
-    }
+		if (!firstConnection) {
+			return NextResponse.json({
+				success: false,
+				error: "No connection found",
+			});
+		}
 
-    let allRecords = [];
-    let hasMoreRecords = true;
-    let currentCursor = null;
+		let allRecords: IRecord[] = [];
+		let hasMoreRecords = true;
+		let currentCursor = null;
+		let newRecordsCount = 0;
+		let existingRecordsCount = 0;
 
-    // Keep fetching while there are more records
-    while (hasMoreRecords) {
-      console.log(`Fetching records with cursor: ${currentCursor}`);
-      
-      // Use the correct syntax for running the action
-      const result = await client
-        .connection(firstConnection.id)
-        .action(actionKey, {
-          instanceKey: instanceKey || undefined,
-          autoCreate: autoCreate
-        })
-        .run({cursor: currentCursor});
+		// Keep fetching while there are more records
+		while (hasMoreRecords) {
+			console.log(`Fetching records with cursor: ${currentCursor}`);
 
-      const records = result.output.records || [];
-      allRecords = [...allRecords, ...records];
+			// Use the correct syntax for running the action
+			const result = await client
+				.connection(firstConnection.id)
+				.action(actionKey, {
+					instanceKey: instanceKey || undefined,
+				})
+				.run({ cursor: currentCursor });
 
-      // Save batch to MongoDB
-      if (records.length > 0) {
-        const recordsToSave = records.map(record => ({
-          ...record,
-          customerId: auth.customerId,
-          recordType: actionKey === 'get-objects' ? instanceKey : actionKey,
-        }));
+			const records = result.output.records || [];
+			allRecords = [...allRecords, ...records];
 
-        await Promise.all(recordsToSave.map(record => 
-          Record.updateOne(
-            { id: record.id, customerId: auth.customerId },
-            record,
-            { upsert: true }
-          )
-        ));
+			// Save batch to MongoDB with duplicate checking
+			if (records.length > 0) {
+				const recordsToSave = records.map((record: IRecord) => ({
+					...record,
+					customerId: auth.customerId,
+					recordType: actionKey === "get-objects" ? instanceKey : actionKey,
+				}));
 
-        console.log(`Saved ${records.length} records to MongoDB`);
-      }
+				// Check for existing records and only save new ones
+				for (const record of recordsToSave) {
+					const existingRecord = await Record.findOne({
+						id: record.id,
+						customerId: auth.customerId,
+						recordType: record.recordType,
+					});
 
-      // Check if there are more records to fetch
-      currentCursor = result.output.cursor;
-      hasMoreRecords = !!currentCursor;
+					if (existingRecord) {
+						existingRecordsCount++;
+						console.log(`Record ${record.id} already exists, skipping...`);
+					} else {
+						await Record.create(record);
+						newRecordsCount++;
+						console.log(`Saved new record ${record.id} to MongoDB`);
+					}
+				}
 
-      if (hasMoreRecords) {
-        console.log('More records available, continuing to next page...');
-      }
-    }
+				console.log(
+					`Processed ${records.length} records: ${newRecordsCount} new, ${existingRecordsCount} existing`
+				);
+			}
 
-    console.log(`Import completed. Total records: ${allRecords.length}`);
+			// Check if there are more records to fetch
+			currentCursor = result.output.cursor;
+			hasMoreRecords = !!currentCursor;
 
-    return NextResponse.json({ 
-      success: true,
-      recordsCount: allRecords.length 
-    });
-  } catch (error) {
-    console.error('Error in import:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
-  }
-} 
+			if (hasMoreRecords) {
+				console.log("More records available, continuing to next page...");
+			}
+		}
+
+		console.log(
+			`Import completed. Total records processed: ${allRecords.length}, New: ${newRecordsCount}, Existing: ${existingRecordsCount}`
+		);
+
+		return NextResponse.json({
+			success: true,
+			recordsCount: allRecords.length,
+			newRecordsCount,
+			existingRecordsCount,
+		});
+	} catch (error) {
+		console.error("Error in import:", error);
+		return NextResponse.json(
+			{ error: "Internal Server Error" },
+			{ status: 500 }
+		);
+	}
+}

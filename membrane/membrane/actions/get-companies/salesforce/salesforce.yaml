@@ -1,0 +1,26 @@
+isCustomized: true
+parentId: 682a02f541e92f55f89c4df1
+integrationId: 682a02e2e178a786a39aeaf8
+key: get-companies
+state: READY
+errors: []
+isDeactivated: false
+id: 682a0320219c74312f27bf32
+name: Get Companies
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: companies
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: companies
+    includeRawFields: true
+  filter:
+    Name: ''
+integrationKey: salesforce

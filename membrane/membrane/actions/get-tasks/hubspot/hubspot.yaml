@@ -1,0 +1,24 @@
+isCustomized: false
+parentId: 682a51d5219c74312f3763b2
+integrationId: 682a02dece0e5ddeb3a296e4
+key: get-tasks
+state: READY
+errors: []
+isDeactivated: false
+id: 682a51d5219c74312f3763c4
+name: Get Tasks
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: tasks
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: tasks
+    includeRawFields: false
+integrationKey: hubspot

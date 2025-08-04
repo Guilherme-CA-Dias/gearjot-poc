@@ -1,0 +1,24 @@
+isCustomized: false
+parentId: 682a02f650f3116cf115cdf3
+integrationId: 682a02e2e178a786a39aeaf8
+key: get-contacts
+state: READY
+errors: []
+isDeactivated: false
+id: 682a0323ed6a3ebc14c5af8f
+name: Get Contacts
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: contacts
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: contacts
+    includeRawFields: true
+integrationKey: salesforce

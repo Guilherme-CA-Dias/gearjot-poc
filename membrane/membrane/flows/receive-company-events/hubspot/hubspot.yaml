@@ -1,0 +1,120 @@
+key: receive-company-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a0334ce0e5ddeb3a2a0b5
+name: Receive Company Events
+universalFlowId: 682a030f219c74312f27bd1d
+integrationId: 682a02dece0e5ddeb3a296e4
+integration:
+  key: hubspot
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 682a02dece0e5ddeb3a296e4
+  name: HubSpot
+  uuid: 01791017-94b1-4ee2-b96e-9937c3f87a9e
+  connectorId: 62471fad996d5c297ae43f5f
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: true
+  hasGlobalWebhooks: true
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/53c3d46c-09f2-407f-aec7-b03deb4f9eae
+  connectorVersion: 1.4.25
+  logoUri: https://static.integration.app/connectors/hubspot/logo.png
+  dataCollectionsCount: 31
+  operationsCount: 646
+  eventsCount: 1
+  authType: oauth2
+nodes:
+  company-created-trigger:
+    type: data-record-created-trigger
+    name: Company Created Trigger
+    config:
+      dataSource:
+        key: companies
+      fieldMapping: {}
+    links:
+      - key: get-all-company-fields-by-id
+  company-updated-trigger:
+    type: data-record-updated-trigger
+    name: Company Updated Trigger
+    config:
+      dataSource:
+        key: companies
+      fieldMapping: {}
+    links:
+      - key: get-all-company-fields-by-id2
+  get-all-company-fields-by-id:
+    type: find-data-record-by-id
+    name: Get all Company fields by Id
+    config:
+      dataSource:
+        key: companies
+      fieldMapping:
+        key: companies
+        includeRawFields: true
+      id:
+        $var: $.input.company-created-trigger.record.id
+    links:
+      - key: create-company-in-my-app
+  get-all-company-fields-by-id2:
+    type: find-data-record-by-id
+    name: Get all Company fields by Id
+    config:
+      dataSource:
+        key: companies
+      id:
+        $var: $.input.company-updated-trigger.record.id
+      fieldMapping:
+        key: companies
+        includeRawFields: true
+    links:
+      - key: update-company-in-my-app
+  create-company-in-my-app:
+    type: api-request-to-your-app
+    name: Create Company in my App
+    config:
+      request:
+        body:
+          externalCompanyId:
+            $var: $.input.get-all-company-fields-by-id.id
+          data:
+            $var: $.input.get-all-company-fields-by-id
+    links: []
+  update-company-in-my-app:
+    type: api-request-to-your-app
+    name: Update Company in my App
+    config:
+      request:
+        body:
+          externalCompanyId:
+            $var: $.input.get-all-company-fields-by-id2.id
+          data:
+            $var: $.input.get-all-company-fields-by-id2
+    links: []
+  delete-company-in-my-app:
+    type: api-request-to-your-app
+    name: Delete Company from My App
+    config:
+      request:
+        body:
+          externalCompanyId:
+            $var: $.input.company-deleted-trigger.record.id
+        method: POST
+    links: []
+  company-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Company Deleted Trigger
+    config:
+      dataSource:
+        key: companies
+      fieldMapping: {}
+    links:
+      - key: delete-company-in-my-app
+autoCreateInstances: false
+customized: false
+integrationKey: hubspot

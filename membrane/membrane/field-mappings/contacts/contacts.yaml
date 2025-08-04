@@ -1,0 +1,20 @@
+key: contacts
+state: READY
+errors: []
+isDeactivated: false
+id: 682a030e41e92f55f89c50fd
+name: Contacts
+customized: true
+dataSourceKey: contacts
+appSchema:
+  $ref: contacts
+direction: both
+defaultImportValue:
+  id:
+    $var: $.id
+  name:
+    $var: $.fullName
+  email:
+    $var: $.primaryEmail
+defaultExportValue:
+  $var: $

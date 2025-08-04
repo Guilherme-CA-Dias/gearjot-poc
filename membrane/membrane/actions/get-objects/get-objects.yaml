@@ -1,0 +1,20 @@
+isCustomized: true
+key: get-objects
+state: READY
+errors: []
+isDeactivated: false
+id: 682a0858ce0e5ddeb3a3815e
+name: Get Objects
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: objects
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: objects

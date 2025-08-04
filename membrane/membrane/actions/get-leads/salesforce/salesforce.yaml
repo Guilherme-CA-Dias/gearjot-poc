@@ -1,0 +1,30 @@
+isCustomized: false
+parentId: 682a02f6b2b4d3e2ee2b97f1
+integrationId: 682a02e2e178a786a39aeaf8
+key: get-leads
+state: CONFIGURATION_ERROR
+errors:
+  - message: Field Mapping Dependency has error(s)
+    type: dependency_error
+    data:
+      workspaceElementReference:
+        type: field-mapping
+        id: 682a03273f96f5825e43fdbc
+isDeactivated: false
+id: 682a03273f96f5825e43fdb2
+name: Get Leads
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: leads
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: leads
+    includeRawFields: true
+integrationKey: salesforce

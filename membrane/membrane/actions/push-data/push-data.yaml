@@ -1,0 +1,23 @@
+isCustomized: true
+key: push-data
+state: READY
+errors: []
+isDeactivated: false
+id: 682a02f7eee3e05fe4aa22f1
+name: Push data
+type: create-data-record
+inputSchema:
+  type: object
+  properties:
+    id:
+      type: string
+    data:
+      type: object
+      properties:
+        '':
+          type: string
+config:
+  dataSource:
+    key: objects
+  fieldMapping:
+    key: objects

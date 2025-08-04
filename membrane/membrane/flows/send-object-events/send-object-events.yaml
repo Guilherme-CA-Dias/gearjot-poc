@@ -1,0 +1,73 @@
+key: send-object-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a4fb469ea0a197332fb5e
+name: Send Object Events
+nodes:
+  app-event-trigger:
+    type: app-event-trigger
+    name: App Event Trigger
+    config:
+      appEvent:
+        key: object-event
+      filter:
+        $eval:
+          $var: $.flowInstance.instanceKey
+        is:
+          $var: $.input.instanceKey
+    links:
+      - key: create-object
+        filter:
+          $eval:
+            $var: $.input.type
+          is: created
+      - key: update-data-record
+        filter:
+          $eval:
+            $var: $.input.type
+          is: updated
+      - key: delete-data-record
+        filter:
+          $eval:
+            $var: $.input.type
+          is: deleted
+  create-object:
+    type: create-data-record
+    name: Create Object
+    config:
+      dataSource:
+        key: objects
+      fieldMapping:
+        key: objects
+    links:
+      - key: api-request-to-your-app
+  update-data-record:
+    type: update-data-record
+    name: Update Data Record
+    config:
+      dataSource:
+        key: objects
+      fieldMapping:
+        key: objects
+    links: []
+  delete-data-record:
+    type: delete-data-record
+    name: Delete Data Record
+    config:
+      dataSource:
+        key: objects
+    links: []
+  api-request-to-your-app:
+    type: api-request-to-your-app
+    name: API Request to Your App
+    config:
+      request:
+        method: POST
+        uri: /webhooks/
+        body:
+          data:
+            $var: $.input.create-object
+    links: []
+autoCreateInstances: false
+customized: true

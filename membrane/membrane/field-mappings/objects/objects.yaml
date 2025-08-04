@@ -1,0 +1,11 @@
+key: objects
+state: READY
+errors: []
+isDeactivated: false
+id: 682a030f6e692c120812b705
+name: Objects
+customized: true
+dataSourceKey: objects
+appSchema:
+  $ref: object
+direction: both

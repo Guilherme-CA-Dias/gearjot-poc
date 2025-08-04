@@ -1,0 +1,86 @@
+key: deals
+state: SETUP_FAILED
+errors:
+  - message: Cannot read properties of null (reading 'id')
+    type: internal
+isDeactivated: false
+id: 682a032532932705009bf27d
+name: Deals
+customized: false
+universalFieldMappingId: 682a030e6e692c120812b6f4
+integrationId: 682a02e2e178a786a39aeaf8
+appSchema:
+  $ref: deals
+direction: both
+defaultImportValue:
+  $var: $
+defaultExportValue:
+  $var: $
+exportValue:
+  CloseDate:
+    $extractDate: $.closeTime
+importValue:
+  id:
+    $var: $.Id
+  name:
+    $var: $.Name
+  companyId:
+    $var: $.AccountId
+  ownerId:
+    $var: $.OwnerId
+  amount:
+    $var: $.Amount
+  probability:
+    $var: $.Probability
+  campaignId:
+    $var: $.CampaignId
+  contactId:
+    $var: $.ContactId
+  source:
+    $var: $.LeadSource
+  description:
+    $var: $.Description
+  stage:
+    $var: $.StageName
+  type:
+    $var: $.Type
+  closeTime:
+    $concat:
+      values:
+        - $var: $.CloseDate
+        - T23:59:59Z
+      delimiter: ''
+  createdTime:
+    $var: $.CreatedDate
+  createdBy:
+    $var: $.CreatedById
+  updatedTime:
+    $var: $.SystemModstamp
+  updatedBy:
+    $var: $.LastModifiedById
+  stageId:
+    $var: $.StageId
+integration:
+  key: salesforce
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 682a02e2e178a786a39aeaf8
+  name: Salesforce
+  uuid: 3fae03cc-7c05-4871-9b36-5f4aa31d84c8
+  connectorId: 62471fad996d5c297ae43f5e
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/73d3deac-bf53-49fe-a646-0ad8c0b35824
+  connectorVersion: 1.6.2
+  logoUri: https://static.integration.app/connectors/salesforce-connector/logo.png
+  dataCollectionsCount: 30
+  operationsCount: 303
+  eventsCount: 0
+  authType: oauth2
+integrationKey: salesforce

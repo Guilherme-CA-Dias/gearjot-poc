@@ -1,0 +1,85 @@
+key: receive-objects-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a4ce341e92f55f8a773f1
+name: Receive Objects Events
+universalFlowId: 682a3eab38cbde432cd28020
+integrationId: 682a02dece0e5ddeb3a296e4
+integration:
+  key: hubspot
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 682a02dece0e5ddeb3a296e4
+  name: HubSpot
+  uuid: 01791017-94b1-4ee2-b96e-9937c3f87a9e
+  connectorId: 62471fad996d5c297ae43f5f
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: true
+  hasGlobalWebhooks: true
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/53c3d46c-09f2-407f-aec7-b03deb4f9eae
+  connectorVersion: 1.4.25
+  logoUri: https://static.integration.app/connectors/hubspot/logo.png
+  dataCollectionsCount: 31
+  operationsCount: 646
+  eventsCount: 1
+  authType: oauth2
+nodes:
+  data-record-created-trigger:
+    type: data-record-created-trigger
+    name: Data Record Created Trigger
+    config:
+      dataSource:
+        key: objects
+      fieldMapping:
+        key: objects
+    links:
+      - key: get-all-object-fields
+  data-record-updated-trigger:
+    type: data-record-updated-trigger
+    name: Data Record Updated Trigger
+    config:
+      dataSource:
+        key: objects
+      fieldMapping:
+        key: objects
+    links: []
+  data-record-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Data Record Deleted Trigger
+    config:
+      dataSource:
+        key: objects
+      fieldMapping: {}
+    links: []
+  get-all-object-fields:
+    type: find-data-record-by-id
+    name: Get all Object Fields
+    config:
+      dataSource:
+        key: objects
+      id:
+        $var: $.input.data-record-created-trigger.record.id
+      fieldMapping:
+        key: null
+    links:
+      - key: create-a-object-in-my-app
+  create-a-object-in-my-app:
+    type: api-request-to-your-app
+    name: Create a Object in my app
+    config:
+      request:
+        method: POST
+        body:
+          externalObjectId: ''
+          data:
+            $var: $.input.data-record-created-trigger
+    links: []
+autoCreateInstances: false
+customized: false
+integrationKey: hubspot

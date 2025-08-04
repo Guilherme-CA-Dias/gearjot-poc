@@ -1,0 +1,21 @@
+isCustomized: false
+key: get-deals
+state: READY
+errors: []
+isDeactivated: false
+id: 682a02f6219c74312f27b968
+name: Get Deals
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: deals
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: deals
+    includeRawFields: true

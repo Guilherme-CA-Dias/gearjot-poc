@@ -1,0 +1,104 @@
+key: send-contact-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a035b22e5e363a6dd44a7
+name: Send Contact Events
+universalFlowId: 682a0317e178a786a39af2cf
+integrationId: 682a02e2e178a786a39aeaf8
+integration:
+  key: salesforce
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 682a02e2e178a786a39aeaf8
+  name: Salesforce
+  uuid: 3fae03cc-7c05-4871-9b36-5f4aa31d84c8
+  connectorId: 62471fad996d5c297ae43f5e
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/73d3deac-bf53-49fe-a646-0ad8c0b35824
+  connectorVersion: 1.6.2
+  logoUri: https://static.integration.app/connectors/salesforce-connector/logo.png
+  dataCollectionsCount: 30
+  operationsCount: 303
+  eventsCount: 0
+  authType: oauth2
+nodes:
+  app-event-trigger:
+    type: app-event-trigger
+    name: Contact Event Trigger
+    config:
+      appEvent:
+        key: contact-event
+    links:
+      - key: create-data-record
+        name: Contact created
+        filter:
+          $eval:
+            $var: $.output.type
+          is: created
+      - key: delete-data-record
+        name: Contact deleted
+        filter:
+          $eval:
+            $var: $.output.type
+          is: deleted
+      - key: update-data-record
+        name: Contact updated
+        filter:
+          $eval:
+            $var: $.output.type
+          is: updated
+  create-data-record:
+    type: create-data-record
+    name: Create Contact
+    config:
+      dataSource:
+        key: contacts
+      fieldMapping:
+        key: contacts
+        input:
+          $var: $.input.app-event-trigger.data
+    links:
+      - key: save-external-contact-id
+  delete-data-record:
+    type: delete-data-record
+    name: Delete Contact
+    config:
+      dataSource:
+        key: contacts
+      id:
+        $var: $.input.app-event-trigger.externalContactId
+      fieldMapping: {}
+    links: []
+  update-data-record:
+    type: update-data-record
+    name: Update Contact
+    config:
+      dataSource:
+        key: contacts
+      id:
+        $var: $.input.app-event-trigger.externalContactId
+      fieldMapping:
+        key: contacts
+        input:
+          $var: $.input.app-event-trigger.data
+    links: []
+  save-external-contact-id:
+    type: api-request-to-your-app
+    name: Save External Contact Id
+    config:
+      request:
+        body:
+          externalContactId:
+            $var: $.input.create-data-record.id
+    links: []
+autoCreateInstances: false
+customized: false
+integrationKey: salesforce

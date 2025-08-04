@@ -1,0 +1,111 @@
+key: task-event
+isDeactivated: false
+id: 682a51d4219c74312f376364
+name: Task Event
+globalWebhookUri: >-
+  https://api.integration.app/webhooks/app-events/4bd9f7cc-f295-4eac-bd78-d051bc127f59
+schema:
+  type: object
+  properties:
+    type:
+      type: string
+      enum:
+        - created
+        - updated
+        - deleted
+    data:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        websiteUrl:
+          type: string
+        phones:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+              type:
+                type: string
+        primaryPhone:
+          type: string
+        description:
+          type: string
+        currency:
+          type: string
+        industry:
+          type: string
+        ownerId:
+          type: string
+          referenceUdm: users
+        primaryAddress:
+          type: object
+          properties:
+            type:
+              type: string
+            full:
+              type: string
+            street:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            country:
+              type: string
+            zip:
+              type: string
+        addresses:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              full:
+                type: string
+              street:
+                type: string
+              city:
+                type: string
+              state:
+                type: string
+              country:
+                type: string
+              zip:
+                type: string
+        numberOfEmployees:
+          type: number
+        createdTime:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+          referenceUdm: users
+          readOnly: true
+        updatedTime:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedBy:
+          type: string
+          referenceUdm: users
+          readOnly: true
+        lastActivityTime:
+          type: string
+          format: date-time
+          readOnly: true
+    customerId:
+      type: string
+    internalTaskId:
+      type: string
+    externalTaskId:
+      type: string
+  title: Schema
+userIdFormula:
+  $var: $.customerId

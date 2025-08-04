@@ -1,0 +1,13 @@
+key: object
+isDeactivated: false
+id: 682a02fc32932705009beb99
+name: Object
+code: |-
+  module.exports = async ({apiClient, user, instanceKey}) => {
+
+    const userId = user.internalId;
+    const instance = instanceKey
+
+    const { data } = await apiClient.get(`/schema/${instance}/${userId}`)
+    return data.schema
+  }

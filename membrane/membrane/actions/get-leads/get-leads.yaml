@@ -1,0 +1,21 @@
+isCustomized: false
+key: get-leads
+state: READY
+errors: []
+isDeactivated: false
+id: 682a02f6b2b4d3e2ee2b97f1
+name: Get Leads
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: leads
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: leads
+    includeRawFields: true

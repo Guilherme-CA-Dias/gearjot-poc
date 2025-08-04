@@ -1,0 +1,91 @@
+key: receive-company-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a030f219c74312f27bd1d
+name: Receive Company Events
+nodes:
+  company-created-trigger:
+    type: data-record-created-trigger
+    name: Company Created Trigger
+    config:
+      dataSource:
+        key: companies
+    links:
+      - key: get-all-company-fields-by-id
+  company-updated-trigger:
+    type: data-record-updated-trigger
+    name: Company Updated Trigger
+    config:
+      dataSource:
+        key: companies
+    links:
+      - key: get-all-company-fields-by-id2
+  get-all-company-fields-by-id:
+    type: find-data-record-by-id
+    name: Get all Company fields by Id
+    config:
+      dataSource:
+        key: companies
+      fieldMapping:
+        key: companies
+        includeRawFields: true
+      id:
+        $var: $.input.company-created-trigger.record.id
+    links:
+      - key: create-company-in-my-app
+  get-all-company-fields-by-id2:
+    type: find-data-record-by-id
+    name: Get all Company fields by Id
+    config:
+      dataSource:
+        key: companies
+      id:
+        $var: $.input.company-updated-trigger.record.id
+      fieldMapping:
+        key: companies
+        includeRawFields: true
+    links:
+      - key: update-company-in-my-app
+  create-company-in-my-app:
+    type: api-request-to-your-app
+    name: Create Company in my App
+    config:
+      request:
+        body:
+          externalCompanyId:
+            $var: $.input.get-all-company-fields-by-id.id
+          data:
+            $var: $.input.get-all-company-fields-by-id
+    links: []
+  update-company-in-my-app:
+    type: api-request-to-your-app
+    name: Update Company in my App
+    config:
+      request:
+        body:
+          externalCompanyId:
+            $var: $.input.get-all-company-fields-by-id2.id
+          data:
+            $var: $.input.get-all-company-fields-by-id2
+    links: []
+  delete-company-in-my-app:
+    type: api-request-to-your-app
+    name: Delete Company from My App
+    config:
+      request:
+        body:
+          externalCompanyId:
+            $var: $.input.company-deleted-trigger.record.id
+        method: POST
+    links: []
+  company-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Company Deleted Trigger
+    config:
+      dataSource:
+        key: companies
+    links:
+      - key: delete-company-in-my-app
+autoCreateInstances: false
+customized: false

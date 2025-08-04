@@ -1,0 +1,125 @@
+key: receive-deal-events
+state: SETUP_FAILED
+errors:
+  - message: >-
+      data-source with key deals not found for integration
+      682a02dece0e5ddeb3a296e4.
+    type: bad_request
+    key: not_found
+isDeactivated: false
+id: 682a034ab2b4d3e2ee2b9f9b
+name: Receive Deal Events
+universalFlowId: 682a03109498c45969425dac
+integrationId: 682a02dece0e5ddeb3a296e4
+integration:
+  key: hubspot
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 682a02dece0e5ddeb3a296e4
+  name: HubSpot
+  uuid: 01791017-94b1-4ee2-b96e-9937c3f87a9e
+  connectorId: 62471fad996d5c297ae43f5f
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: true
+  hasGlobalWebhooks: true
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/53c3d46c-09f2-407f-aec7-b03deb4f9eae
+  connectorVersion: 1.4.25
+  logoUri: https://static.integration.app/connectors/hubspot/logo.png
+  dataCollectionsCount: 31
+  operationsCount: 646
+  eventsCount: 1
+  authType: oauth2
+nodes:
+  deal-created-trigger:
+    type: data-record-created-trigger
+    name: Deal Created Trigger
+    config:
+      dataSource:
+        key: deals
+      fieldMapping: {}
+    links:
+      - key: get-all-deal-fields-by-id
+  deal-updated-trigger:
+    type: data-record-updated-trigger
+    name: Deal Updated Trigger
+    config:
+      dataSource:
+        key: deals
+      fieldMapping: {}
+    links:
+      - key: get-all-deal-fields-by-id2
+  get-all-deal-fields-by-id:
+    type: find-data-record-by-id
+    name: Get all Deal fields by Id
+    config:
+      dataSource:
+        key: deals
+      fieldMapping:
+        key: deals
+        includeRawFields: true
+      id:
+        $var: $.input.deal-created-trigger.record.id
+    links:
+      - key: create-deal-in-my-app
+  get-all-deal-fields-by-id2:
+    type: find-data-record-by-id
+    name: Get all Deal fields by Id
+    config:
+      dataSource:
+        key: deals
+      id:
+        $var: $.input.deal-updated-trigger.record.id
+      fieldMapping:
+        key: deals
+        includeRawFields: true
+    links:
+      - key: update-deal-in-my-app
+  create-deal-in-my-app:
+    type: api-request-to-your-app
+    name: Create Deal in my App
+    config:
+      request:
+        body:
+          externalDealId:
+            $var: $.input.get-all-deal-fields-by-id.id
+          data:
+            $var: $.input.get-all-deal-fields-by-id
+    links: []
+  update-deal-in-my-app:
+    type: api-request-to-your-app
+    name: Update Deal in my App
+    config:
+      request:
+        body:
+          externalDealId:
+            $var: $.input.get-all-deal-fields-by-id2.id
+          data:
+            $var: $.input.get-all-deal-fields-by-id2
+    links: []
+  delete-deal-in-my-app:
+    type: api-request-to-your-app
+    name: Delete Deal from My App
+    config:
+      request:
+        body:
+          externalDealId:
+            $var: $.input.deal-deleted-trigger.record.id
+        method: POST
+    links: []
+  deal-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Deal Deleted Trigger
+    config:
+      dataSource:
+        key: deals
+      fieldMapping: {}
+    links:
+      - key: delete-deal-in-my-app
+autoCreateInstances: false
+customized: false
+integrationKey: hubspot

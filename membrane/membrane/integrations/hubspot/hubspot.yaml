@@ -1,0 +1,6 @@
+id: 682a02dece0e5ddeb3a296e4
+key: hubspot
+name: HubSpot
+connectorId: 62471fad996d5c297ae43f5f
+baseUri: s3://integration-app-connectors/public/53c3d46c-09f2-407f-aec7-b03deb4f9eae
+connectorVersion: 1.4.25

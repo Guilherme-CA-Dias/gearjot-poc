@@ -1,0 +1,77 @@
+key: send-contact-events
+state: READY
+errors: []
+isDeactivated: false
+id: 682a0317e178a786a39af2cf
+name: Send Contact Events
+nodes:
+  app-event-trigger:
+    type: app-event-trigger
+    name: Contact Event Trigger
+    config:
+      appEvent:
+        key: contact-event
+    links:
+      - key: create-data-record
+        name: Contact created
+        filter:
+          $eval:
+            $var: $.output.type
+          is: created
+      - key: delete-data-record
+        name: Contact deleted
+        filter:
+          $eval:
+            $var: $.output.type
+          is: deleted
+      - key: update-data-record
+        name: Contact updated
+        filter:
+          $eval:
+            $var: $.output.type
+          is: updated
+  create-data-record:
+    type: create-data-record
+    name: Create Contact
+    config:
+      dataSource:
+        key: contacts
+      fieldMapping:
+        key: contacts
+        input:
+          $var: $.input.app-event-trigger.data
+    links:
+      - key: save-external-contact-id
+  delete-data-record:
+    type: delete-data-record
+    name: Delete Contact
+    config:
+      dataSource:
+        key: contacts
+      id:
+        $var: $.input.app-event-trigger.externalContactId
+    links: []
+  update-data-record:
+    type: update-data-record
+    name: Update Contact
+    config:
+      dataSource:
+        key: contacts
+      id:
+        $var: $.input.app-event-trigger.externalContactId
+      fieldMapping:
+        key: contacts
+        input:
+          $var: $.input.app-event-trigger.data
+    links: []
+  save-external-contact-id:
+    type: api-request-to-your-app
+    name: Save External Contact Id
+    config:
+      request:
+        body:
+          externalContactId:
+            $var: $.input.create-data-record.id
+    links: []
+autoCreateInstances: false
+customized: false

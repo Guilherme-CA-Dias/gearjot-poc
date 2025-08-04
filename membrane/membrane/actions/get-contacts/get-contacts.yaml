@@ -1,0 +1,21 @@
+isCustomized: false
+key: get-contacts
+state: READY
+errors: []
+isDeactivated: false
+id: 682a02f650f3116cf115cdf3
+name: Get Contacts
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    cursor:
+      type: string
+config:
+  dataSource:
+    key: contacts
+  cursor:
+    $var: $.input.cursor
+  fieldMapping:
+    key: contacts
+    includeRawFields: true

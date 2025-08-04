@@ -1,0 +1,28 @@
+key: object-event
+isDeactivated: false
+id: 682a4fe250f3116cf121f809
+name: Object Event
+globalWebhookUri: >-
+  https://api.integration.app/webhooks/app-events/19c8f829-0723-4030-9164-95398285f5da
+schema:
+  type: object
+  properties:
+    type:
+      type: string
+      enum:
+        - created
+        - updated
+        - deleted
+    data:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+    customerId:
+      type: string
+    instanceKey:
+      type: string
+  title: Schema
+userIdFormula:
+  $var: $.customerId

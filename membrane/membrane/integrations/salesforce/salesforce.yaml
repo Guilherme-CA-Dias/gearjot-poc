@@ -1,0 +1,6 @@
+id: 682a02e2e178a786a39aeaf8
+key: salesforce
+name: Salesforce
+connectorId: 62471fad996d5c297ae43f5e
+baseUri: s3://integration-app-connectors/public/73d3deac-bf53-49fe-a646-0ad8c0b35824
+connectorVersion: 1.6.2

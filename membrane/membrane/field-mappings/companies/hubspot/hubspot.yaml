@@ -1,0 +1,87 @@
+key: companies
+state: READY
+errors: []
+isDeactivated: false
+id: 682a031feee3e05fe4aa28da
+name: Companies
+customized: false
+universalFieldMappingId: 682a030d219c74312f27bd01
+integrationId: 682a02dece0e5ddeb3a296e4
+dataSourceKey: companies
+appSchema:
+  $ref: companies
+direction: both
+defaultImportValue:
+  $var: $
+defaultExportValue:
+  $var: $
+exportValue:
+  name:
+    $var: $.name
+importValue:
+  id:
+    $var: $.hs_object_id
+  name:
+    $var: $.name
+  websiteUrl:
+    $var: $.website
+  primaryPhone:
+    $var: $.phone
+  description:
+    $var: $.description
+  industry:
+    $var: $.industry
+  ownerId:
+    $var: $.hubspot_owner_id
+  primaryAddress:
+    full:
+      $concat:
+        values:
+          - $var: $.address
+          - $var: $.city
+          - $var: $.state
+          - $var: $.country
+          - $var: $.zip
+        delimiter: ' '
+    street:
+      $var: $.address
+    city:
+      $var: $.city
+    state:
+      $var: $.state
+    country:
+      $var: $.country
+    zip:
+      $var: $.zip
+  createdTime:
+    $var: $.createdate
+  createdBy:
+    $var: $.hs_created_by_user_id
+  updatedTime:
+    $var: $.hs_lastmodifieddate
+  updatedBy:
+    $var: $.hs_updated_by_user_id
+integration:
+  key: hubspot
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 682a02dece0e5ddeb3a296e4
+  name: HubSpot
+  uuid: 01791017-94b1-4ee2-b96e-9937c3f87a9e
+  connectorId: 62471fad996d5c297ae43f5f
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: true
+  hasGlobalWebhooks: true
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/53c3d46c-09f2-407f-aec7-b03deb4f9eae
+  connectorVersion: 1.4.25
+  logoUri: https://static.integration.app/connectors/hubspot/logo.png
+  dataCollectionsCount: 31
+  operationsCount: 646
+  eventsCount: 1
+  authType: oauth2
+integrationKey: hubspot
