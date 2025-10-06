@@ -327,7 +327,10 @@ export function RecordsTable({
 				</div>
 			) : (
 				// Card view - use ScrollArea for vertical scroll
-				<ScrollArea className="h-[800px] w-full" scrollHideDelay={0}>
+				<ScrollArea
+					className="h-[calc(100vh-16rem)] w-full border border-gray-200 dark:border-gray-700 rounded-lg"
+					scrollHideDelay={0}
+				>
 					<div className="space-y-3 p-4 pr-6">
 						{isLoading ? (
 							Array.from({ length: 3 }).map((_, index) => (
@@ -465,7 +468,10 @@ export function RecordsTable({
 							</div>
 						)}
 					</div>
-					<ScrollBar orientation="vertical" />
+					<ScrollBar
+						orientation="vertical"
+						className="bg-gray-200 dark:bg-gray-700"
+					/>
 				</ScrollArea>
 			)}
 
