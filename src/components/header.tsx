@@ -43,23 +43,10 @@ export function Header() {
 								Integrations
 							</Link>
 							<Link
-								href="/forms"
-								className="inline-flex items-center px-1 pt-1 text-sm font-medium"
-							>
-								Configure Record Fields
-							</Link>
-							<Link
 								href="/records"
 								className="inline-flex items-center px-1 pt-1 text-sm font-medium"
 							>
-								Import/UpdateRecords
-							</Link>
-
-							<Link
-								href="/submit-form"
-								className="inline-flex items-center px-1 pt-1 text-sm font-medium"
-							>
-								Create Records
+								Import Records
 							</Link>
 						</div>
 					</div>
