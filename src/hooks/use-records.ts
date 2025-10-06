@@ -19,15 +19,11 @@ export function useRecords(actionKey: string | null, search: string = "") {
 	const formId = actionKey?.startsWith("get-") ? actionKey.substring(4) : null;
 	const isCustomForm = formId && !defaultFormTypes.includes(formId);
 
-	// For custom forms, we'll use 'get-objects' with instanceKey parameter
+	// Use the actual action key for all forms
 	const apiEndpoint = actionKey
-		? isCustomForm
-			? `/api/records?action=get-objects&instanceKey=${formId}${
-					search ? `&search=${encodeURIComponent(search)}` : ""
-			  }`
-			: `/api/records?action=${actionKey}${
-					search ? `&search=${encodeURIComponent(search)}` : ""
-			  }`
+		? `/api/records?action=${actionKey}${
+				search ? `&search=${encodeURIComponent(search)}` : ""
+		  }${isCustomForm ? `&instanceKey=${formId}` : ""}`
 		: null;
 
 	const { data, error, isLoading, mutate } = useSWR<RecordsResponse>(
@@ -53,14 +49,10 @@ export function useRecords(actionKey: string | null, search: string = "") {
 
 		setIsLoadingMore(true);
 		try {
-			// For custom forms, use 'get-objects' with instanceKey
-			const endpoint = isCustomForm
-				? `/api/records?action=get-objects&instanceKey=${formId}&cursor=${
-						data.cursor
-				  }${search ? `&search=${encodeURIComponent(search)}` : ""}`
-				: `/api/records?action=${actionKey}&cursor=${data.cursor}${
-						search ? `&search=${encodeURIComponent(search)}` : ""
-				  }`;
+			// Use the actual action key for all forms
+			const endpoint = `/api/records?action=${actionKey}&cursor=${data.cursor}${
+				search ? `&search=${encodeURIComponent(search)}` : ""
+			}${isCustomForm ? `&instanceKey=${formId}` : ""}`;
 
 			const nextPage = (await authenticatedFetcher(
 				endpoint
@@ -91,10 +83,10 @@ export function useRecords(actionKey: string | null, search: string = "") {
 
 		setIsImporting(true);
 		try {
-			// For custom forms, use 'get-objects' with instanceKey
-			const endpoint = isCustomForm
-				? `/api/records/import?action=get-objects&instanceKey=${formId}`
-				: `/api/records/import?action=${actionKey}`;
+			// Use the actual action key for all forms
+			const endpoint = `/api/records/import?action=${actionKey}${
+				isCustomForm ? `&instanceKey=${formId}` : ""
+			}`;
 
 			const response = (await authenticatedFetcher(endpoint)) as {
 				success: boolean;

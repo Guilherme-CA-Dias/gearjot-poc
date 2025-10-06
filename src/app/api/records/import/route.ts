@@ -3,7 +3,7 @@ import { getAuthFromRequest } from "@/lib/server-auth";
 import { getIntegrationClient } from "@/lib/integration-app-client";
 import { Record, IRecord } from "@/models/record";
 import { connectToDatabase } from "@/lib/mongodb";
-import { RecordActionKey } from "@/lib/constants";
+import { RecordActionKey, RECORD_ACTIONS } from "@/lib/constants";
 
 export async function GET(request: NextRequest) {
 	try {
@@ -23,10 +23,21 @@ export async function GET(request: NextRequest) {
 			);
 		}
 
-		// For get-objects action, instanceKey is required
-		if (actionKey === "get-objects" && !instanceKey) {
+		// Get default form types from RECORD_ACTIONS
+		const defaultFormTypes = RECORD_ACTIONS.filter(
+			(action) => action.type === "default"
+		).map((action) => action.key.replace("get-", ""));
+
+		// Extract the form ID from the action key
+		const formId = actionKey?.startsWith("get-")
+			? actionKey.substring(4)
+			: null;
+		const isCustomForm = formId && !defaultFormTypes.includes(formId);
+
+		// For custom forms, instanceKey is required
+		if (isCustomForm && !instanceKey) {
 			return NextResponse.json(
-				{ error: "Instance key is required for get-objects action" },
+				{ error: "Instance key is required for custom forms" },
 				{ status: 400 }
 			);
 		}
@@ -64,12 +75,22 @@ export async function GET(request: NextRequest) {
 			const records = result.output.records || [];
 			allRecords = [...allRecords, ...records];
 
+			// Debug: Log the structure of the first record to understand the data format
+			if (records.length > 0) {
+				console.log(
+					"Sample record structure:",
+					JSON.stringify(records[0], null, 2)
+				);
+			}
+
 			// Save batch to MongoDB with duplicate checking
 			if (records.length > 0) {
 				const recordsToSave = records.map((record: IRecord) => ({
 					...record,
+					// Ensure name field exists - use id as fallback if name is missing
+					name: record.name || record.id || "Unnamed Record",
 					customerId: auth.customerId,
-					recordType: actionKey === "get-objects" ? instanceKey : actionKey,
+					recordType: isCustomForm ? instanceKey : actionKey,
 				}));
 
 				// Check for existing records and only save new ones
@@ -117,7 +138,10 @@ export async function GET(request: NextRequest) {
 	} catch (error) {
 		console.error("Error in import:", error);
 		return NextResponse.json(
-			{ error: "Internal Server Error" },
+			{
+				error: "Internal Server Error",
+				details: error instanceof Error ? error.message : String(error),
+			},
 			{ status: 500 }
 		);
 	}

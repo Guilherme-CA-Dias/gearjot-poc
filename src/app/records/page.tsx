@@ -21,7 +21,13 @@ interface FormDefinition {
 }
 
 export default function RecordsPage() {
-	const [selectedAction, setSelectedAction] = useState<string | "">("");
+	const [selectedAction, setSelectedAction] = useState<string | "">(() => {
+		// Try to get the last selected action from localStorage
+		if (typeof window !== "undefined") {
+			return localStorage.getItem("selectedAction") || "";
+		}
+		return "";
+	});
 	const [searchQuery, setSearchQuery] = useState("");
 	const [forms, setForms] = useState<FormDefinition[]>([]);
 	const [isLoadingForms, setIsLoadingForms] = useState(true);
@@ -58,6 +64,14 @@ export default function RecordsPage() {
 
 				setForms(data.forms);
 
+				// Auto-select first form if no form is selected and forms are available
+				// Only auto-select if there's no persisted selection
+				if (!selectedAction && data.forms.length > 0) {
+					const firstForm = data.forms[0];
+					const actionKey = `get-${firstForm.formId}`;
+					setSelectedAction(actionKey);
+				}
+
 				// Clear selected action if the form no longer exists
 				if (
 					selectedAction &&
@@ -78,6 +92,13 @@ export default function RecordsPage() {
 
 		fetchForms();
 	}, [customerId, selectedAction]);
+
+	// Save selected action to localStorage whenever it changes
+	useEffect(() => {
+		if (selectedAction && typeof window !== "undefined") {
+			localStorage.setItem("selectedAction", selectedAction);
+		}
+	}, [selectedAction]);
 
 	const handleRecordUpdated = () => {
 		// Refresh the records list
